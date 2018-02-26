@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { } from '@types/googlemaps';
+
 
 @Component({
   selector: 'app-gmap',
@@ -11,6 +12,14 @@ export class GmapComponent implements OnInit {
   
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
+
+  @ViewChild("search")
+  public searchElementRef: ElementRef;
+
+  constructor(
+
+    private ngZone: NgZone
+  ) {}
 
   latitude:number;
   longitude:number;
@@ -23,18 +32,36 @@ export class GmapComponent implements OnInit {
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
 
-    var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(46.546360, 6.649013),
-        map: this.map,
-        title: 'Click to zoom'
-      });
+      google.maps.event.addListener(this.map, 'click', function(event) {
+        var marker = new google.maps.Marker({
+            position: event.latLng, 
+            map: this.map,
+            title : "home"
+        });
+        console.log("marker added")
+     });
 
-    marker.addListener('click', function() {
-    this.map.setZoom(8);
-    this.map.setCenter(marker.getPosition());
-    });
 
-  }
+        let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+          types: ["address"]
+        });
+        autocomplete.addListener("place_changed", () => {
+          this.ngZone.run(() => {
+            //get the place result
+            let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+    
+            //verify result
+            if (place.geometry === undefined || place.geometry === null) {
+              return;
+            }
+            
+            //set latitude, longitude and zoom
+            this.latitude = place.geometry.location.lat();
+            this.longitude = place.geometry.location.lng();
+          });
+        });
+
+    }
 
   setMapType(mapTypeId: string) {
     this.map.setMapTypeId(mapTypeId)    
