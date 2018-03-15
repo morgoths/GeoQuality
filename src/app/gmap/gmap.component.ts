@@ -59,19 +59,16 @@ export class GmapComponent implements OnInit {
         }
         for (var i = 0; i < this.markersRestaurant.length; ++i) {
           this.markersRestaurant[i].setMap(null);
-          this.markersRestaurant.splice(i, 1);
         }
+        this.markersRestaurant = [];
         for (var i = 0; i < this.markersHopitaux.length; ++i) {
           this.markersHopitaux[i].setMap(null);
-          this.markersHopitaux.splice(i, 1);
         }
+        this.markersHopitaux = [];
         for (var i = 0; i < this.markersTransport.length; ++i) {
-          this.markersTransport[i].setMap(null);
-          this.markersTransport.splice(i, 1);
+          this.markersTransport[i].setMap(null); 
         }
-
-
-
+        this.markersTransport = []
 
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(this.latitude, this.longitude),
@@ -92,7 +89,7 @@ export class GmapComponent implements OnInit {
         var requestTransport = {
           location: new google.maps.LatLng(this.latitude, this.longitude),
           radius: 100,
-          query: 'subway_station'
+          query: 'station'
         };
 
         var service = new google.maps.places.PlacesService(this.map);
@@ -153,21 +150,39 @@ export class GmapComponent implements OnInit {
   }
 
   changeCheck(e){
-    console.log(e.target.id);
-    console.log(e.target.checked)
-    console.log(this.markersRestaurant)
-    for (var i = 0; i < this.markersRestaurant.length; i++) {
-      var marker = this.markersRestaurant[i];
-      if (!marker.getVisible()) {
-        marker.setVisible(true);
-      } else {
-        marker.setVisible(false);
-      }
-    }
-        
+    switch(e.target.id){
+      case "Restaurant" :
+        for (var i = 0; i < this.markersRestaurant.length; i++) {
+          var marker = this.markersRestaurant[i];
+          if (!marker.getVisible()) {
+            marker.setVisible(true);
+          } else {
+            marker.setVisible(false);
+          }
+        }
+        break;
+      case "Hopital" :
+        for (var i = 0; i < this.markersHopitaux.length; i++) {
+          var marker = this.markersHopitaux[i];
+          if (!marker.getVisible()) {
+            marker.setVisible(true);
+          } else {
+            marker.setVisible(false);
+          }
+        }
+        break;
+      case "Transport" :
+        for (var i = 0; i < this.markersTransport.length; i++) {
+          var marker = this.markersTransport[i];
+          if (!marker.getVisible()) {
+            marker.setVisible(true);
+          } else {
+            marker.setVisible(false);
+          }
+        }
+        break;
+    }        
   }
-
-
 
   setMapType(mapTypeId: string) {
     this.map.setMapTypeId(mapTypeId)
