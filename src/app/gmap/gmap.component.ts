@@ -23,7 +23,10 @@ export class GmapComponent implements OnInit {
 
   latitude: number;
   longitude: number;
-  markers = [];
+  marker = null;
+  markersRestaurant = [];
+  markersHopitaux = [];
+  markersTransport = [];
 
   ngOnInit() {
     var mapProp = {
@@ -32,12 +35,6 @@ export class GmapComponent implements OnInit {
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-
-    google.maps.event.addListener(this.map, 'click', function (event) {
-      // Map clic
-      console.log("marker added")
-    });
-
 
     let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
       types: ["address"]
@@ -56,10 +53,25 @@ export class GmapComponent implements OnInit {
         this.latitude = place.geometry.location.lat();
         this.longitude = place.geometry.location.lng();
 
-        for (var i = 0; i < this.markers.length; ++i) {
-          this.markers[i].setMap(null);
-          this.markers.splice(i, 1);
+        // reset marker
+        if(this.marker !== null){
+          this.marker.setMap(null);
         }
+        for (var i = 0; i < this.markersRestaurant.length; ++i) {
+          this.markersRestaurant[i].setMap(null);
+          this.markersRestaurant.splice(i, 1);
+        }
+        for (var i = 0; i < this.markersHopitaux.length; ++i) {
+          this.markersHopitaux[i].setMap(null);
+          this.markersHopitaux.splice(i, 1);
+        }
+        for (var i = 0; i < this.markersTransport.length; ++i) {
+          this.markersTransport[i].setMap(null);
+          this.markersTransport.splice(i, 1);
+        }
+
+
+
 
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(this.latitude, this.longitude),
@@ -69,32 +81,57 @@ export class GmapComponent implements OnInit {
 
         var request = {
           location: new google.maps.LatLng(this.latitude, this.longitude),
-          radius: 500,
+          radius: 100,
           query: 'restaurant'
+        };
+        var requestHopital = {
+          location: new google.maps.LatLng(this.latitude, this.longitude),
+          radius: 100,
+          query: 'hospital'
+        };
+        var requestTransport = {
+          location: new google.maps.LatLng(this.latitude, this.longitude),
+          radius: 100,
+          query: 'subway_station'
         };
 
         var service = new google.maps.places.PlacesService(this.map);
         service.textSearch(request, callback.bind(this));
+        service.textSearch(requestHopital, callbackHopital.bind(this));
+        service.textSearch(requestTransport, callbackTransport.bind(this));
 
         function callback(results, status) {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             for (var i = 0; i < results.length; i++) {
-              createMarker(results[i], this.map, this.markers);
+              createMarker(results[i], this.map, this.markersRestaurant, "restaurant");
+            }
+          }
+        }
+        function callbackHopital(results, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+              createMarker(results[i], this.map, this.markersHopitaux, "hopital");
+            }
+          }
+        }
+        function callbackTransport(results, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+              createMarker(results[i], this.map, this.markersTransport, "transport");
             }
           }
         }
 
-        function createMarker(place, map, markers) {
+        function createMarker(place, map, markers, type) {
           var infoWindow = new google.maps.InfoWindow();
+          
           var marker = new google.maps.Marker({
             map: map,
             position: place.geometry.location,
-            title: "Restaurant",
-            icon: "/assets/images/restaurant.png",
+            icon: "/assets/images/" + type + ".png",
           });
           marker.addListener('click', function () {
             var request = { placeId: place.place_id };
-
             service.getDetails(request, function (result, status) {
               if (status !== google.maps.places.PlacesServiceStatus.OK) {
                 console.error(status);
@@ -109,9 +146,25 @@ export class GmapComponent implements OnInit {
 
         this.map.setCenter(new google.maps.LatLng(this.latitude, this.longitude));
 
-        this.markers.push(marker);
+        this.marker = marker;
+        
       });
     });
+  }
+
+  changeCheck(e){
+    console.log(e.target.id);
+    console.log(e.target.checked)
+    console.log(this.markersRestaurant)
+    for (var i = 0; i < this.markersRestaurant.length; i++) {
+      var marker = this.markersRestaurant[i];
+      if (!marker.getVisible()) {
+        marker.setVisible(true);
+      } else {
+        marker.setVisible(false);
+      }
+    }
+        
   }
 
 
