@@ -1,6 +1,10 @@
 import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { } from '@types/googlemaps';
+import * as $ from 'jquery';
+
+import * as topojson from "topojson-client";
+
 
 
 @Component({
@@ -23,18 +27,34 @@ export class GmapComponent implements OnInit {
 
   latitude: number;
   longitude: number;
+
   marker = null;
   markersRestaurant = [];
   markersHopitaux = [];
   markersTransport = [];
 
   ngOnInit() {
+    var geoJsonObject;
     var mapProp = {
       center: new google.maps.LatLng(46.546360, 6.649013),
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+
+    //test geoJSON
+    var self = this;
+    $.getJSON("/assets/ch_cantons.json", function(data){
+      geoJsonObject = topojson.feature(data, data.objects.cantons)
+      self.map.data.addGeoJson(geoJsonObject)
+    });
+
+    this.map.data.addListener('click', function(event) {
+      alert(event.feature.getProperty('name'))
+    });
+ 
+
+    //end test
 
     let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
       types: ["address"]
@@ -54,7 +74,7 @@ export class GmapComponent implements OnInit {
         this.longitude = place.geometry.location.lng();
 
         // reset marker
-        if(this.marker !== null){
+        if (this.marker !== null) {
           this.marker.setMap(null);
         }
         for (var i = 0; i < this.markersRestaurant.length; ++i) {
@@ -66,7 +86,7 @@ export class GmapComponent implements OnInit {
         }
         this.markersHopitaux = [];
         for (var i = 0; i < this.markersTransport.length; ++i) {
-          this.markersTransport[i].setMap(null); 
+          this.markersTransport[i].setMap(null);
         }
         this.markersTransport = []
 
@@ -121,7 +141,7 @@ export class GmapComponent implements OnInit {
 
         function createMarker(place, map, markers, type) {
           var infoWindow = new google.maps.InfoWindow();
-          
+
           var marker = new google.maps.Marker({
             map: map,
             position: place.geometry.location,
@@ -144,14 +164,14 @@ export class GmapComponent implements OnInit {
         this.map.setCenter(new google.maps.LatLng(this.latitude, this.longitude));
 
         this.marker = marker;
-        
+
       });
     });
   }
 
-  changeCheck(e){
-    switch(e.target.id){
-      case "Restaurant" :
+  changeCheck(e) {
+    switch (e.target.id) {
+      case "Restaurant":
         for (var i = 0; i < this.markersRestaurant.length; i++) {
           var marker = this.markersRestaurant[i];
           if (!marker.getVisible()) {
@@ -161,7 +181,7 @@ export class GmapComponent implements OnInit {
           }
         }
         break;
-      case "Hopital" :
+      case "Hopital":
         for (var i = 0; i < this.markersHopitaux.length; i++) {
           var marker = this.markersHopitaux[i];
           if (!marker.getVisible()) {
@@ -171,7 +191,7 @@ export class GmapComponent implements OnInit {
           }
         }
         break;
-      case "Transport" :
+      case "Transport":
         for (var i = 0; i < this.markersTransport.length; i++) {
           var marker = this.markersTransport[i];
           if (!marker.getVisible()) {
@@ -181,7 +201,7 @@ export class GmapComponent implements OnInit {
           }
         }
         break;
-    }        
+    }
   }
 
   setMapType(mapTypeId: string) {
