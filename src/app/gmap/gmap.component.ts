@@ -5,6 +5,11 @@ import { } from '@types/googlemaps';
 import * as $ from 'jquery';
 import * as topojson from "topojson-client";
 
+enum States {
+  Canton = 'Cantons',
+  Districts = 'Districts',
+  Communes = 'Communes'
+}
 
 @Component({
   selector: 'app-gmap',
@@ -12,7 +17,9 @@ import * as topojson from "topojson-client";
   styleUrls: ['./gmap.component.css']
 })
 
+
 export class GmapComponent implements OnInit {
+  state: States;
   entries = [];
   selectedEntry: { [key: string]: any } = {
     value: null,
@@ -27,7 +34,6 @@ export class GmapComponent implements OnInit {
   public searchElementRef: ElementRef;
 
   constructor(
-
     private ngZone: NgZone
   ) { }
 
@@ -42,6 +48,8 @@ export class GmapComponent implements OnInit {
   dataDistricts;
 
   ngOnInit() {
+    this.state = States.Canton;
+
     this.entries = [
       {
         description: 'Cantons',
@@ -80,12 +88,29 @@ export class GmapComponent implements OnInit {
  */
     this.map.data.addListener('click', function (event) {
       self.ngZone.run(() => {
-        self.textValue = event.feature.getProperty('name');
-      });
+        switch (self.state) {
+          case States.Canton:
+            self.map.data.forEach(function (feature) {
+              self.map.data.remove(feature);
+            });
+            $.getJSON("/assets/ch_" + event.feature.getProperty('name') + "_communes.json", function (data) {
+              geoJsonObject = topojson.feature(data, data.objects.municipalities)
+              self.map.data.addGeoJson(geoJsonObject)
+              self.state = States.Communes
+            });
+            break;
+          case States.Communes:
 
-      console.log(self.textValue)
+            break;
+          case States.Districts:
+
+            break;
+        }
+        self.textValue = "" + self.state + " : " + event.feature.getProperty('name');
+        console.log(self.textValue)
+      });
     });
-   
+
 
     //end test
 
@@ -217,17 +242,24 @@ export class GmapComponent implements OnInit {
           geoJsonObject = topojson.feature(data, data.objects.cantons)
           map.data.addGeoJson(geoJsonObject)
         });
+        this.state = States.Canton;
         break;
       case 2:
         $.getJSON("/assets/ch_districts.json", function (data) {
           geoJsonObject = topojson.feature(data, data.objects.districts)
           map.data.addGeoJson(geoJsonObject)
+          this.state = States.Districts;
         });
         break;
       case 3:
+        $.getJSON("/assets/ch_communes.json", function (data) {
+          geoJsonObject = topojson.feature(data, data.objects.municipalities)
+          map.data.addGeoJson(geoJsonObject)
+          this.state = States.Communes;
+        });
         break;
     }
-    
+
     /*
     map.data.addListener('click', function (event) {
       self.ngZone.run(() => {
