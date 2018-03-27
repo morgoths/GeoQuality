@@ -1,15 +1,15 @@
 <div class="form-check form-check-inline">
     <input class="form-check-input" type="checkbox" id="Hopital" value="option1" checked="true" (change)="changeCheck($event)">
     <label class="form-check-label" for="inlineCheckbox1">Hopital</label>
-  </div>
-  <div class="form-check form-check-inline">
+</div>
+<div class="form-check form-check-inline">
     <input class="form-check-input" type="checkbox" id="Restaurant" value="option2" checked="true" (change)="changeCheck($event)">
     <label class="form-check-label" for="inlineCheckbox2">Restaurant</label>
-  </div>
-  <div class="form-check form-check-inline">
+</div>
+<div class="form-check form-check-inline">
     <input class="form-check-input" type="checkbox" id="Transport" value="option3" checked="true" (change)="changeCheck($event)">
     <label class="form-check-label" for="inlineCheckbox3">Transport</label>
-  </div>
+</div>
 <div class="row">
     <div class="col-md-8 col-sm-12 col-xs-12">
         <div class="form-group">
@@ -18,14 +18,19 @@
         </div>
     </div>
 </div>
+<tr *ngFor="let entry of entries; let idx = index">
+    <td>
+        <input type="radio" name="radiogroup" (change)="onSelectionChange(entry, map, self)" [checked]="(idx === 0)" [value]="entry.id">
+    </td>
+    <td>{{ entry.description }}</td>
+</tr>
+
 {{textValue}}
-
-
 <div class="row">
     <div class="col-md-12">
         <div class="text-center">
             <h3>
-                <div #gmap style="width:100%;height:800px"></div>
+                <div #gmap style="width:65%;height:800px"></div>
             </h3>
         </div>
     </div>
