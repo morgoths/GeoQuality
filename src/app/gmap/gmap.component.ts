@@ -86,26 +86,75 @@ export class GmapComponent implements OnInit {
       self.map.data.addGeoJson(geoJsonObject)
     });
  */
-    this.map.data.addListener('click', function (event) {
+    this.map.data.addListener('rightclick', function (event) {
+      var caurrentLatLng = new google.maps.LatLng(
+        event.lat,
+        event.lng
+      );
+      var projection;
+      var contextmenuDir;
+      projection = self.map.getProjection();
+      $('.contextmenu').remove();
+      contextmenuDir = document.createElement("div");
+      contextmenuDir.className = 'contextmenu';
+      contextmenuDir.innerHTML = '<a id="menu1"><div class="context">menu item 1<\/div><\/a>'
+        + '<a id="menu2"><div class="context">menu item 2<\/div><\/a>';
+
+      $(self.map.getDiv()).append(contextmenuDir);
+
+      var mapWidth = $('#map').width();
+      var mapHeight = $('#map').height();
+      var menuWidth = $('.contextmenu').width();
+      var menuHeight = $('.contextmenu').height();
+      var scale = Math.pow(2, self.map.getZoom());
+      var nw = new google.maps.LatLng(
+        self.map.getBounds().getNorthEast().lat(),
+        self.map.getBounds().getSouthWest().lng()
+      );
+
+      var worldCoordinateNW = self.map.getProjection().fromLatLngToPoint(nw);
+      var worldCoordinate = self.map.getProjection().fromLatLngToPoint(caurrentLatLng);
+      var caurrentLatLngOffset = new google.maps.Point(
+        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale))
+      var clickedPosition = caurrentLatLngOffset;
+      var x = clickedPosition.x;
+      var y = clickedPosition.y;
+
+      if ((mapWidth - x) < menuWidth)
+        x = x - menuWidth;
+      if ((mapHeight - y) < menuHeight)
+        y = y - menuHeight;
+
+      $('.contextmenu').css('left', x);
+      $('.contextmenu').css('top', y);
+
+      contextmenuDir.style.visibility = "visible";
       self.ngZone.run(() => {
         switch (self.state) {
           case States.Canton:
-            self.map.data.forEach(function (feature) {
-              self.map.data.remove(feature);
-            });
             $.getJSON("/assets/ch_" + event.feature.getProperty('name') + "_communes.json", function (data) {
+              self.map.data.forEach(function (feature) {
+                self.map.data.remove(feature);
+              });
               geoJsonObject = topojson.feature(data, data.objects.municipalities)
               self.map.data.addGeoJson(geoJsonObject)
               self.state = States.Communes
-            });
+            }).always(function () { })
+              .fail(function (event, jqxhr, exception) { console.log('error') })
             break;
           case States.Communes:
-
+            self.state = States.Communes;
             break;
           case States.Districts:
-
+            self.state = States.Districts;
             break;
         }
+      });
+    });
+
+    this.map.data.addListener('click', function (event) {
+      self.ngZone.run(() => {
         self.textValue = "" + self.state + " : " + event.feature.getProperty('name');
         console.log(self.textValue)
       });
@@ -248,15 +297,15 @@ export class GmapComponent implements OnInit {
         $.getJSON("/assets/ch_districts.json", function (data) {
           geoJsonObject = topojson.feature(data, data.objects.districts)
           map.data.addGeoJson(geoJsonObject)
-          this.state = States.Districts;
         });
+        this.state = States.Districts;
         break;
       case 3:
         $.getJSON("/assets/ch_communes.json", function (data) {
           geoJsonObject = topojson.feature(data, data.objects.municipalities)
           map.data.addGeoJson(geoJsonObject)
-          this.state = States.Communes;
         });
+        this.state = States.Communes;
         break;
     }
 
@@ -318,3 +367,4 @@ export class GmapComponent implements OnInit {
     this.map.setCenter(new google.maps.LatLng(this.latitude, this.longitude));
   }
 }
+
