@@ -87,49 +87,6 @@ export class GmapComponent implements OnInit {
     });
  */
     this.map.data.addListener('rightclick', function (event) {
-      var caurrentLatLng = new google.maps.LatLng(
-        event.lat,
-        event.lng
-      );
-      var projection;
-      var contextmenuDir;
-      projection = self.map.getProjection();
-      $('.contextmenu').remove();
-      contextmenuDir = document.createElement("div");
-      contextmenuDir.className = 'contextmenu';
-      contextmenuDir.innerHTML = '<a id="menu1"><div class="context">menu item 1<\/div><\/a>'
-        + '<a id="menu2"><div class="context">menu item 2<\/div><\/a>';
-
-      $(self.map.getDiv()).append(contextmenuDir);
-
-      var mapWidth = $('#map').width();
-      var mapHeight = $('#map').height();
-      var menuWidth = $('.contextmenu').width();
-      var menuHeight = $('.contextmenu').height();
-      var scale = Math.pow(2, self.map.getZoom());
-      var nw = new google.maps.LatLng(
-        self.map.getBounds().getNorthEast().lat(),
-        self.map.getBounds().getSouthWest().lng()
-      );
-
-      var worldCoordinateNW = self.map.getProjection().fromLatLngToPoint(nw);
-      var worldCoordinate = self.map.getProjection().fromLatLngToPoint(caurrentLatLng);
-      var caurrentLatLngOffset = new google.maps.Point(
-        Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
-        Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale))
-      var clickedPosition = caurrentLatLngOffset;
-      var x = clickedPosition.x;
-      var y = clickedPosition.y;
-
-      if ((mapWidth - x) < menuWidth)
-        x = x - menuWidth;
-      if ((mapHeight - y) < menuHeight)
-        y = y - menuHeight;
-
-      $('.contextmenu').css('left', x);
-      $('.contextmenu').css('top', y);
-
-      contextmenuDir.style.visibility = "visible";
       self.ngZone.run(() => {
         switch (self.state) {
           case States.Canton:
