@@ -25,7 +25,9 @@ export class GmapComponent implements OnInit {
     value: null,
     description: null
   };
-  textValue: string;
+  cantonInfo: string;
+  districtInfo: string;
+  communeInfo: string;
 
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
@@ -96,6 +98,7 @@ export class GmapComponent implements OnInit {
               });
               geoJsonObject = topojson.feature(data, data.objects.municipalities)
               self.map.data.addGeoJson(geoJsonObject)
+              self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name');
               self.state = States.Communes
             }).always(function () { })
               .fail(function (event, jqxhr, exception) { console.log('error') })
@@ -126,8 +129,17 @@ export class GmapComponent implements OnInit {
 
     this.map.data.addListener('click', function (event) {
       self.ngZone.run(() => {
-        self.textValue = "" + self.state + " : " + event.feature.getProperty('name');
-        console.log(self.textValue)
+        switch (self.state) {
+          case States.Canton:
+            self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name');
+            break;
+          case States.Communes:
+            self.communeInfo = "" + self.state + " : " + event.feature.getProperty('name');
+            break;
+          case States.Districts:
+            self.districtInfo = "" + self.state + " : " + event.feature.getProperty('name');
+            break;
+        }
       });
     });
 

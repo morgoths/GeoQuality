@@ -8,7 +8,8 @@
 </div>
 <div class="row">
     <div class="form-check form-check-inline">
-        | |<input class="form-check-input" type="checkbox" id="Hopital" value="option1" checked="true" (change)="changeCheck($event)">
+        | |
+        <input class="form-check-input" type="checkbox" id="Hopital" value="option1" checked="true" (change)="changeCheck($event)">
         <label class="form-check-label" for="inlineCheckbox1">Hopital</label>
     </div>
     <div class="form-check form-check-inline">
@@ -27,8 +28,20 @@
     </td>
     <td>{{ entry.description }}</td>
 </tr>
+<div>
+    <div></div>
+    <div>{{cantonInfo}}</div>
+</div>
+<div>
+    <div></div>
+    <div>{{districtInfo}}</div>
+</div>
+<div>
+    <div></div>
+    <div>{{communeInfo}}</div>
+</div>
 
-{{textValue}}
+
 <div class="row">
     <div class="col-md-12">
         <div class="text-center">
