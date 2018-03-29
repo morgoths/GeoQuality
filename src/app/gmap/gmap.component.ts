@@ -101,10 +101,24 @@ export class GmapComponent implements OnInit {
               .fail(function (event, jqxhr, exception) { console.log('error') })
             break;
           case States.Communes:
-            self.state = States.Communes;
+            self.map.data.forEach(function (feature) {
+              self.map.data.remove(feature);
+            });
+            $.getJSON("/assets/ch_cantons.json", function (data) {
+              geoJsonObject = topojson.feature(data, data.objects.cantons)
+              self.map.data.addGeoJson(geoJsonObject)
+            });
+            self.state = States.Canton;
             break;
           case States.Districts:
-            self.state = States.Districts;
+            self.map.data.forEach(function (feature) {
+              self.map.data.remove(feature);
+            });
+            $.getJSON("/assets/ch_cantons.json", function (data) {
+              geoJsonObject = topojson.feature(data, data.objects.cantons)
+              self.map.data.addGeoJson(geoJsonObject)
+            });
+            self.state = States.Canton;
             break;
         }
       });
