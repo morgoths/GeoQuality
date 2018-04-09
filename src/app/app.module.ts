@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import { GmapComponent } from './gmap/gmap.component';
+import { HttpModule } from '@angular/http';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { GmapComponent } from './gmap/gmap.component';
   imports: [
     BrowserModule,
     FormsModule,
+    HttpModule,
     ReactiveFormsModule
   ],
   providers: [],

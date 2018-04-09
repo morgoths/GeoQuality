@@ -4,6 +4,8 @@ import { SimpleChanges } from '@angular/core';
 import { } from '@types/googlemaps';
 import * as $ from 'jquery';
 import * as topojson from "topojson-client";
+import { Http, Response } from '@angular/http'
+import 'rxjs/add/operator/map'
 
 enum States {
   Canton = 'Cantons',
@@ -19,6 +21,7 @@ enum States {
 
 
 export class GmapComponent implements OnInit {
+  serverUrl: String;
   state: States;
   entries = [];
   selectedEntry: { [key: string]: any } = {
@@ -36,7 +39,8 @@ export class GmapComponent implements OnInit {
   public searchElementRef: ElementRef;
 
   constructor(
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private http: Http
   ) { }
 
   latitude: number;
@@ -50,6 +54,7 @@ export class GmapComponent implements OnInit {
   dataDistricts;
 
   ngOnInit() {
+    this.serverUrl = 'http://localhost:8080';
     this.state = States.Canton;
 
     this.entries = [
@@ -90,56 +95,75 @@ export class GmapComponent implements OnInit {
  */
     this.map.data.addListener('rightclick', function (event) {
       self.ngZone.run(() => {
-        switch (self.state) {
-          case States.Canton:
-            $.getJSON("/assets/ch_" + event.feature.getProperty('name') + "_communes.json", function (data) {
-              self.map.data.forEach(function (feature) {
-                self.map.data.remove(feature);
-              });
-              geoJsonObject = topojson.feature(data, data.objects.municipalities)
-              self.map.data.addGeoJson(geoJsonObject)
-              self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name');
-              self.state = States.Communes
-            }).always(function () { })
-              .fail(function (event, jqxhr, exception) { console.log('error') })
-            break;
-          case States.Communes:
-            self.map.data.forEach(function (feature) {
-              self.map.data.remove(feature);
-            });
-            $.getJSON("/assets/ch_cantons.json", function (data) {
-              geoJsonObject = topojson.feature(data, data.objects.cantons)
-              self.map.data.addGeoJson(geoJsonObject)
-            });
-            self.state = States.Canton;
-            break;
-          case States.Districts:
-            self.map.data.forEach(function (feature) {
-              self.map.data.remove(feature);
-            });
-            $.getJSON("/assets/ch_cantons.json", function (data) {
-              geoJsonObject = topojson.feature(data, data.objects.cantons)
-              self.map.data.addGeoJson(geoJsonObject)
-            });
-            self.state = States.Canton;
-            break;
-        }
+        self.http.get(self.serverUrl + '/population/' + self.state.toLowerCase() + '?name=' + event.feature.getProperty('name'))
+          .map((res: Response) => res.json())
+          .subscribe(res => {
+            switch (self.state) {
+              case States.Canton:
+                $.getJSON("/assets/ch_" + event.feature.getProperty('name') + "_communes.json", function (data) {
+                  self.map.data.forEach(function (feature) {
+                    self.map.data.remove(feature);
+                  });
+                  geoJsonObject = topojson.feature(data, data.objects.municipalities)
+                  self.map.data.addGeoJson(geoJsonObject)
+                  self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population;
+                  self.state = States.Communes
+                }).always(function () { })
+                  .fail(function (event, jqxhr, exception) { console.log('error') })
+                break;
+              case States.Communes:
+                self.map.data.forEach(function (feature) {
+                  self.map.data.remove(feature);
+                });
+                $.getJSON("/assets/ch_cantons.json", function (data) {
+                  geoJsonObject = topojson.feature(data, data.objects.cantons)
+                  self.map.data.addGeoJson(geoJsonObject)
+                });
+                self.state = States.Canton;
+                break;
+              case States.Districts:
+                self.map.data.forEach(function (feature) {
+                  self.map.data.remove(feature);
+                });
+                $.getJSON("/assets/ch_cantons.json", function (data) {
+                  geoJsonObject = topojson.feature(data, data.objects.cantons)
+                  self.map.data.addGeoJson(geoJsonObject)
+                });
+                self.state = States.Canton;
+                break;
+            }
+          })
       });
     });
 
     this.map.data.addListener('click', function (event) {
       self.ngZone.run(() => {
-        switch (self.state) {
-          case States.Canton:
-            self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name');
-            break;
-          case States.Communes:
-            self.communeInfo = "" + self.state + " : " + event.feature.getProperty('name');
-            break;
-          case States.Districts:
-            self.districtInfo = "" + self.state + " : " + event.feature.getProperty('name');
-            break;
-        }
+        self.http.get(self.serverUrl + '/population/' + self.state.toLowerCase() + '?name=' + event.feature.getProperty('name'))
+          .map((res: Response) => res.json())
+          .subscribe(res => {
+            switch (self.state) {
+              case States.Canton:
+                self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population;
+                break;
+              case States.Communes:
+                self.http.get(self.serverUrl + '/impositions/' + self.state.toLowerCase() + '?revenue=10000&name=' + event.feature.getProperty('name'))
+                  .map((resImpos: Response) => resImpos.json())
+                  .subscribe(resImpos => {
+                    self.communeInfo = "" + self.state + " : " + event.feature.getProperty('name') 
+                                          + ' | Populations : ' + res.population 
+                                          + ' | Charges fiscales : ' + resImpos.charge;
+                  })
+                break;
+              case States.Districts:
+                self.http.get(self.serverUrl + '/crimes/' + self.state.toLowerCase() + '?name=' + event.feature.getProperty('name'))
+                  .map((resCrimes: Response) => resCrimes.json())
+                  .subscribe(resCrimes => {
+                    self.districtInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population + ' | Crimes : ' + resCrimes.nombre;
+                  })
+
+                break;
+            }
+          })
       });
     });
 
