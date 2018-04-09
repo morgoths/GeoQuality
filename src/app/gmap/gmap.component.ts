@@ -5,6 +5,7 @@ import { } from '@types/googlemaps';
 import * as $ from 'jquery';
 import * as topojson from "topojson-client";
 import { Http, Response } from '@angular/http'
+import { NouisliderModule } from 'ng2-nouislider';
 import 'rxjs/add/operator/map'
 
 enum States {
@@ -21,6 +22,8 @@ enum States {
 
 
 export class GmapComponent implements OnInit {
+  revenue = 80000;
+  revenueStart = 80000;
   serverUrl: String;
   state: States;
   entries = [];
@@ -146,12 +149,12 @@ export class GmapComponent implements OnInit {
                 self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population;
                 break;
               case States.Communes:
-                self.http.get(self.serverUrl + '/impositions/' + self.state.toLowerCase() + '?revenue=10000&name=' + event.feature.getProperty('name'))
+                self.http.get(self.serverUrl + '/impositions/' + self.state.toLowerCase() + '?revenue=' + self.revenue + '&name=' + event.feature.getProperty('name'))
                   .map((resImpos: Response) => resImpos.json())
                   .subscribe(resImpos => {
-                    self.communeInfo = "" + self.state + " : " + event.feature.getProperty('name') 
-                                          + ' | Populations : ' + res.population 
-                                          + ' | Charges fiscales : ' + resImpos.charge;
+                    self.communeInfo = "" + self.state + " : " + event.feature.getProperty('name')
+                      + ' | Populations : ' + res.population
+                      + ' | Charges fiscales : ' + resImpos.charge;
                   })
                 break;
               case States.Districts:
@@ -327,6 +330,10 @@ export class GmapComponent implements OnInit {
     });
     */
 
+  }
+
+  onChangeRevenu(e){
+    this.revenue = e;
   }
 
   changeCheck(e) {

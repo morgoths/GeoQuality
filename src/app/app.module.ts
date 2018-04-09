@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AppComponent } from './app.component';
 import { GmapComponent } from './gmap/gmap.component';
 import { HttpModule } from '@angular/http';
+import { NouisliderModule } from 'ng2-nouislider';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { HttpModule } from '@angular/http';
     BrowserModule,
     FormsModule,
     HttpModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NouisliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]
