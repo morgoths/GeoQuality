@@ -2,7 +2,7 @@
     <div class="col-md-8 col-sm-12 col-xs-12">
         <div class="form-group">
             <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control"
-                #search [formControl]="searchControl">
+                #search>
         </div>
     </div>
 </div>
@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<nouislider [tooltips]="true" [min]="0" [max]="200000" [step]="1000.0" [(ngModel)]="revenueStart" (ngModelChange)="onChangeRevenu($event)" [disabled]="disabled"></nouislider>
+<nouislider [tooltips]="true" [min]="0" [max]="200000" [step]="1000.0" [(ngModel)]="revenueStart" (ngModelChange)="onChangeRevenu($event)"></nouislider>
 
 <tr *ngFor="let entry of entries; let idx = index">
     <td>
