@@ -26,7 +26,7 @@
 
 <tr *ngFor="let entry of entries; let idx = index">
     <td>
-        <input type="radio" name="radiogroup" (change)="onSelectionChange(entry, map, self)" [checked]="(idx === 0)" [value]="entry.id">
+        <input type="radio" name="radiogroup" (change)="onSelectionChange(entry, map, self)" [checked]="(idx === 0)" [id]="entry.id" [value]="entry.id">
     </td>
     <td>{{ entry.description }}</td>
 </tr>

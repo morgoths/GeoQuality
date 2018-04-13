@@ -110,7 +110,8 @@ export class GmapComponent implements OnInit {
                   geoJsonObject = topojson.feature(data, data.objects.municipalities)
                   self.map.data.addGeoJson(geoJsonObject)
                   self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population;
-                  self.state = States.Communes
+                  self.state = States.Communes;
+                  (<HTMLInputElement>document.getElementById("3")).checked = true;
                 }).always(function () { })
                   .fail(function (event, jqxhr, exception) { console.log('error') })
                 break;
@@ -123,6 +124,7 @@ export class GmapComponent implements OnInit {
                   self.map.data.addGeoJson(geoJsonObject)
                 });
                 self.state = States.Canton;
+                (<HTMLInputElement>document.getElementById("1")).checked = true;
                 break;
               case States.Districts:
                 self.map.data.forEach(function (feature) {
@@ -133,6 +135,7 @@ export class GmapComponent implements OnInit {
                   self.map.data.addGeoJson(geoJsonObject)
                 });
                 self.state = States.Canton;
+                (<HTMLInputElement>document.getElementById("1")).checked = true;
                 break;
             }
           })
@@ -332,7 +335,7 @@ export class GmapComponent implements OnInit {
 
   }
 
-  onChangeRevenu(e){
+  onChangeRevenu(e) {
     this.revenue = e;
   }
 
