@@ -57,7 +57,7 @@ export class GmapComponent implements OnInit {
   dataDistricts;
 
   ngOnInit() {
-    this.serverUrl = 'http://localhost:8080';
+    this.serverUrl = 'https://geoqualityapi.herokuapp.com:80';
     this.state = States.Canton;
 
     this.entries = [
