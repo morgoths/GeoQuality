@@ -7,6 +7,7 @@ import * as topojson from "topojson-client";
 import { Http, Response } from '@angular/http'
 import { NouisliderModule } from 'ng2-nouislider';
 import 'rxjs/add/operator/map'
+import { StructuredType } from 'typescript';
 
 enum States {
   Canton = 'Cantons',
@@ -21,6 +22,7 @@ enum States {
 })
 
 
+
 export class GmapComponent implements OnInit {
   revenue = 80000;
   revenueStart = 80000;
@@ -31,6 +33,10 @@ export class GmapComponent implements OnInit {
     value: null,
     description: null
   };
+
+  canton: Canton;
+  district: District;
+  commune: Commune;
   cantonInfo: string;
   districtInfo: string;
   communeInfo: string;
@@ -59,6 +65,10 @@ export class GmapComponent implements OnInit {
   ngOnInit() {
     this.serverUrl = 'https://geoqualityapi.herokuapp.com';
     this.state = States.Canton;
+
+    this.canton = new Canton();
+    this.district = new District();
+    this.commune = new Commune();
 
     this.entries = [
       {
@@ -109,6 +119,8 @@ export class GmapComponent implements OnInit {
                   });
                   geoJsonObject = topojson.feature(data, data.objects.municipalities)
                   self.map.data.addGeoJson(geoJsonObject)
+                  self.canton.name = event.feature.getProperty('name');
+                  self.canton.populations = res.population;
                   self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population;
                   self.state = States.Communes;
                   (<HTMLInputElement>document.getElementById("3")).checked = true;
@@ -149,12 +161,17 @@ export class GmapComponent implements OnInit {
           .subscribe(res => {
             switch (self.state) {
               case States.Canton:
+                self.canton.name = event.feature.getProperty('name');
+                self.canton.populations = res.population;
                 self.cantonInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population;
                 break;
               case States.Communes:
                 self.http.get(self.serverUrl + '/impositions/' + self.state.toLowerCase() + '?revenue=' + self.revenue + '&name=' + event.feature.getProperty('name'))
                   .map((resImpos: Response) => resImpos.json())
                   .subscribe(resImpos => {
+                    self.commune.name = event.feature.getProperty('name');
+                    self.commune.populations = res.population;
+                    self.commune.impot = resImpos.charge;
                     self.communeInfo = "" + self.state + " : " + event.feature.getProperty('name')
                       + ' | Populations : ' + res.population
                       + ' | Charges fiscales : ' + resImpos.charge;
@@ -164,6 +181,9 @@ export class GmapComponent implements OnInit {
                 self.http.get(self.serverUrl + '/crimes/' + self.state.toLowerCase() + '?name=' + event.feature.getProperty('name'))
                   .map((resCrimes: Response) => resCrimes.json())
                   .subscribe(resCrimes => {
+                    self.district.name = event.feature.getProperty('name');
+                    self.district.populations = res.population;
+                    self.district.crimes = resCrimes.nombre;
                     self.districtInfo = "" + self.state + " : " + event.feature.getProperty('name') + ' | Populations : ' + res.population + ' | Crimes : ' + resCrimes.nombre;
                   })
 
@@ -172,7 +192,6 @@ export class GmapComponent implements OnInit {
           })
       });
     });
-
 
     //end test
 
@@ -383,5 +402,34 @@ export class GmapComponent implements OnInit {
     e.preventDefault();
     this.map.setCenter(new google.maps.LatLng(this.latitude, this.longitude));
   }
+}
+
+class Canton {
+  name: string;
+  populations: number;
+  constructor(name?: string, populations?: number) {
+    this.name = name;
+    this.populations = populations
+
+  }
+}
+
+class Commune extends Canton {
+  impot: number;
+  constructor(name?: string, populations?: number, impot?: number) {
+    super(name, populations)
+    this.impot = impot;
+  }
+
+}
+
+class District extends Canton {
+  crimes: number;
+  constructor(name?: string, populations?: number, crimes?: number) {
+    super(name, populations)
+    this.crimes = crimes;
+  }
+
+
 }
 

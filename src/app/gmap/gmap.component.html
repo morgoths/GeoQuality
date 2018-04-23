@@ -26,23 +26,27 @@
 
 <tr *ngFor="let entry of entries; let idx = index">
     <td>
-        <input type="radio" name="radiogroup" (change)="onSelectionChange(entry, map, self)" [checked]="(idx === 0)" [id]="entry.id" [value]="entry.id">
+        <input type="radio" name="radiogroup" (change)="onSelectionChange(entry, map, self)" [checked]="(idx === 0)" [id]="entry.id"
+            [value]="entry.id">
     </td>
     <td>{{ entry.description }}</td>
 </tr>
-<div>
-    <div></div>
-    <div>{{cantonInfo}}</div>
+<div class="row">
+    <div class="col 4">
+        <div>{{canton.name}}</div>
+        <div>{{canton.populations}}</div>
+    </div>
+    <div class="col 4">
+        <div>{{district.name}}</div>
+        <div>{{district.populations}}</div>
+        <div>{{district.crimes}}</div>
+    </div>
+    <div class="col 4">
+        <div>{{commune.name}}</div>
+        <div>{{commune.populations}}</div>
+        <div>{{commune.impot}}</div>
+    </div>
 </div>
-<div>
-    <div></div>
-    <div>{{districtInfo}}</div>
-</div>
-<div>
-    <div></div>
-    <div>{{communeInfo}}</div>
-</div>
-
 
 <div class="row">
     <div class="col-md-12">
