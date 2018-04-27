@@ -6,7 +6,24 @@ import { AppComponent } from './app.component';
 import { GmapComponent } from './gmap/gmap.component';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
+import { NbThemeModule } from '@nebular/theme';
+import { RouterModule, Routes } from '@angular/router'; // we also need angular router for Nebular to function properly
+import { NbSidebarModule, NbLayoutModule, NbSidebarService, NbCardModule, NbMenuModule, NbMenuService} from '@nebular/theme';
 
+const appRoutes: Routes = [
+  { path: 'crisis-center', component: GmapComponent },
+  { path: 'hero/:id',      component: GmapComponent },
+  {
+    path: 'heroes',
+    component: GmapComponent,
+    data: { title: 'Heroes List' }
+  },
+  { path: '',
+    redirectTo: '',
+    pathMatch: 'full'
+  },
+  { path: '**', component: GmapComponent }
+];
 
 @NgModule({
   declarations: [
@@ -18,9 +35,15 @@ import { NouisliderModule } from 'ng2-nouislider';
     FormsModule,
     HttpModule,
     ReactiveFormsModule,
-    NouisliderModule
+    NouisliderModule,
+    NbThemeModule.forRoot({ name: 'default' }),
+    RouterModule.forRoot(appRoutes, { useHash: true }),
+    NbLayoutModule,
+    NbSidebarModule,
+    NbCardModule,
+    NbMenuModule
   ],
-  providers: [],
+  providers: [NbSidebarService, NbMenuModule.forRoot().providers],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

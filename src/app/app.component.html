@@ -1,4 +1,20 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<h1>{{title}}</h1>
-<h2>{{subTitle}}</h2>
-<app-gmap></app-gmap>
+<nb-layout>
+    <nb-layout-header fixed>
+
+        <h1>{{title}}</h1>
+
+    </nb-layout-header>
+
+        <nb-sidebar class="menu-sidebar left" responsive="" tag="menu-sidebar">
+
+                    <nb-menu [items]="menu"></nb-menu>
+
+        </nb-sidebar>
+
+
+    <nb-layout-column>
+        <app-gmap></app-gmap>
+    </nb-layout-column>
+
+</nb-layout>

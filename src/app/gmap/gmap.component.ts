@@ -9,6 +9,7 @@ import { NouisliderModule } from 'ng2-nouislider';
 import 'rxjs/add/operator/map'
 import { StructuredType } from 'typescript';
 
+
 enum States {
   Canton = 'Cantons',
   Districts = 'Districts',
