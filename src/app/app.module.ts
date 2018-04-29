@@ -9,15 +9,15 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { NbThemeModule } from '@nebular/theme';
 import { RouterModule, Routes } from '@angular/router'; // we also need angular router for Nebular to function properly
 import { NbSidebarModule, NbLayoutModule, NbSidebarService, NbCardModule, NbMenuModule, NbMenuService} from '@nebular/theme';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 const appRoutes: Routes = [
-  { path: 'crisis-center', component: GmapComponent },
-  { path: 'hero/:id',      component: GmapComponent },
-  {
-    path: 'heroes',
-    component: GmapComponent,
-    data: { title: 'Heroes List' }
-  },
+  { path: 'dashboard', component: GmapComponent },
+  { path: 'data',      component: GmapComponent },
+  { path: 'data/googlemap',      component: GmapComponent },
+  { path: 'data/ofs',      component: GmapComponent },
+  { path: 'data/swissopendata',      component: GmapComponent },
+  { path: 'data/api',      component: GmapComponent },
   { path: '',
     redirectTo: '',
     pathMatch: 'full'
@@ -38,6 +38,7 @@ const appRoutes: Routes = [
     NouisliderModule,
     NbThemeModule.forRoot({ name: 'default' }),
     RouterModule.forRoot(appRoutes, { useHash: true }),
+    NgbModule.forRoot(),
     NbLayoutModule,
     NbSidebarModule,
     NbCardModule,

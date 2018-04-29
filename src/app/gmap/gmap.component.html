@@ -1,83 +1,120 @@
 <nb-layout>
 
     <nb-layout-column>
-        <div _ngcontent-c43="" class="row show-grid">
-            <div _ngcontent-c43="" class="col-md-6">
-                <div _ngcontent-c43="">
-                    <nb-card _ngcontent-c31="" _nghost-c23="">
-                        <nb-card-header _ngcontent-c31="">Réglages</nb-card-header>
-                        <nb-card-body _ngcontent-c31="">
-                            Revenue annuel
-                            <nouislider [tooltips]="true" [min]="0" [max]="200000" [step]="1000.0" [(ngModel)]="revenueStart" (ngModelChange)="onChangeRevenu($event)"></nouislider>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Hopital" value="option1" checked="true" (change)="changeCheck($event)">
-                                <label class="form-check-label" for="inlineCheckbox1">Hopital</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Restaurant" value="option2" checked="true" (change)="changeCheck($event)">
-                                <label class="form-check-label" for="inlineCheckbox2">Restaurant</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Transport" value="option3" checked="true" (change)="changeCheck($event)">
-                                <label class="form-check-label" for="inlineCheckbox3">Transport</label>
-                            </div>
-
-                            <tr *ngFor="let entry of entries; let idx = index">
-                                <td>
-                                    <input type="radio" name="radiogroup" (change)="onSelectionChange(entry, map, self)" [checked]="(idx === 0)" [id]="entry.id"
-                                        [value]="entry.id">
-                                </td>
-                                <td>{{ entry.description }}</td>
-                            </tr>
-                        </nb-card-body>
-                    </nb-card>
-
-                    <nb-card _ngcontent-c31="" _nghost-c23="">
-                        <nb-card-header _ngcontent-c31="">Informations - <i class="fas fa-users"></i> = population, <i class="fas fa-balance-scale"></i> = Criminalité, <i class="fas fa-calculator"></i> = taux d'imposition</nb-card-header>
-                        <nb-card-body _ngcontent-c31="">
-                            <nb-card _ngcontent-c31="" _nghost-c23="">
-                                <nb-card-header _ngcontent-c31="">Canton - {{canton.name}}</nb-card-header>
-                                <nb-card-body _ngcontent-c31="">
-                                        <i class="fas fa-users"></i>
-                                        <span _ngcontent-c21="" class="temperature">{{canton.populations}}</span>
-                                </nb-card-body>
-                            </nb-card>
-                            <nb-card _ngcontent-c31="" _nghost-c23="">
-                                    <nb-card-header _ngcontent-c31="">District - {{district.name}}</nb-card-header>
-                                    <nb-card-body _ngcontent-c31="">
-                                            <i class="fas fa-users"></i>
-                                            <span _ngcontent-c21="" class="temperature">{{district.populations}}</span>
-                                            <i class="fas fa-balance-scale"></i>
-                                            <span _ngcontent-c21="" class="temperature">{{district.crimes}}</span>
-                                    </nb-card-body>
-                            </nb-card>
-                            <nb-card _ngcontent-c31="" _nghost-c23="">
-                                    <nb-card-header _ngcontent-c31="">Commune - {{commune.name}}</nb-card-header>
-                                    <nb-card-body _ngcontent-c31="">
-                                            <i class="fas fa-users"></i>
-                                            <span _ngcontent-c21="" class="temperature">{{commune.populations}}</span>
-                                            <i class="fas fa-calculator"></i>
-                                            <span _ngcontent-c21="" class="temperature">{{commune.impot}}</span>
-                                    </nb-card-body>
-                            </nb-card>
-                        </nb-card-body>
-                    </nb-card>
-
-                </div>
-            </div>
-            <div _ngcontent-c43="" class="col-md-6">
+        <div class="row show-grid">
+            <div _ngcontent-c43="" class="col-md-12">
                 <div _ngcontent-c43="">
                     <nb-card _ngcontent-c31="" _nghost-c23="">
                         <nb-card-header _ngcontent-c31="">
-                            <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control"
-                                #search>
+                            <div class="row show-grid">
+                                <div _ngcontent-c43="" class="col-md-10">
+                                    <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control"
+                                        #search>
+                                </div>
+                                <div _ngcontent-c43="" class="col-md-2">
+                                    <div ngbDropdown class="d-inline-block">
+                                        <button class="btn btn-outline-success" id="dropdownBasic1" ngbDropdownToggle>Subdivision</button>
+                                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                            <button (click)="test($event,map,self)" class="dropdown-item" id="1">Canton</button>
+                                            <button (click)="test($event,map,self)" class="dropdown-item" id="2">District</button>
+                                            <button (click)="test($event,map,self)" class="dropdown-item" id="3">Commune</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row show-grid">
+                                <div _ngcontent-c43="" class="col-md-10">
+                                    <br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="Hopital" value="option1" checked="true" (change)="changeCheck($event)">
+                                        <label class="form-check-label" for="inlineCheckbox1">Hopital</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="Restaurant" value="option2" checked="true" (change)="changeCheck($event)">
+                                        <label class="form-check-label" for="inlineCheckbox2">Restaurant</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="Transport" value="option3" checked="true" (change)="changeCheck($event)">
+                                        <label class="form-check-label" for="inlineCheckbox3">Transport</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <nouislider [tooltips]="false" [min]="0" [max]="200000" [step]="1000.0" [(ngModel)]="revenueStart" (ngModelChange)="onChangeRevenu($event)"></nouislider>
+                                    Revenu Annuel : CHF {{revenueStart}}
+                                </div>
+
+                            </div>
+
                         </nb-card-header>
                         <nb-card-body _ngcontent-c31="">
                             <div _ngcontent-c32="" class="agm-map-container-inner sebm-google-map-container-inner" style="position: relative; overflow: hidden;">
-                                <div #gmap style="width:100%;height:600px"></div>
+                                <div #gmap style="width:100%;height:450px"></div>
                             </div>
                         </nb-card-body>
                     </nb-card>
                 </div>
             </div>
         </div>
+        <div class="row show-grid">
+            <div _ngcontent-c43="" class="col-md-4">
+                <nb-card>
+                    <nb-card-header _ngcontent-c31="">Canton - {{canton.name}}</nb-card-header>
+                    <nb-card-body _ngcontent-c31="">
+                        <div class="row show-grid">
+                            <div _ngcontent-c43="" class="col-md-6">
+                                <span>
+                                        <i class="fas fa-users"></i>
+                                </span>
+                                <span _ngcontent-c21="" class="temperature">{{canton.populations}}</span>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </div>
+            <div _ngcontent-c43="" class="col-md-4">
+                <nb-card _ngcontent-c31="" _nghost-c23="">
+                    <nb-card-header _ngcontent-c31="">District - {{district.name}}</nb-card-header>
+                    <nb-card-body _ngcontent-c31="">
+                        <div class="row show-grid">
+                            <div _ngcontent-c43="" class="col-md-6">
+                                <span>
+                                    <i class="fas fa-users"></i>
+                                </span>
+                                <span _ngcontent-c21="" class="temperature">{{district.populations}}</span>
+                            </div>
+                            <div _ngcontent-c43="" class="col-md-6">
+                                <span>
+                                    <i class="fas fa-balance-scale"></i>
+                                </span>
+                                <span _ngcontent-c21="" class="temperature">{{district.crimes}}</span>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </div>
+            <div _ngcontent-c43="" class="col-md-4">
+
+                <nb-card>
+                    <nb-card-header _ngcontent-c31="">Commune - {{commune.name}}</nb-card-header>
+                    <nb-card-body _ngcontent-c31="">
+                        <div class="row show-grid">
+                            <div _ngcontent-c43="" class="col-md-6">
+                                <span>
+                                    <i class="fas fa-users"></i>
+                                </span>
+                                <span _ngcontent-c21="" class="temperature">{{commune.populations}}</span>
+                            </div>
+                            <div _ngcontent-c43="" class="col-md-6">
+                                <span>
+                                    <i class="fas fa-calculator"></i>
+                                </span>
+                                <span _ngcontent-c21="" class="temperature">{{commune.impot}}</span>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </div>
+        </div>
+
+    </nb-layout-column>
+</nb-layout>

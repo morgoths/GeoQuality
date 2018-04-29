@@ -5,35 +5,34 @@ import { NbMenuItem } from '@nebular/theme';
 const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Dashboard',
-    icon: 'nb-home',
-    link: '/pages/dashboard',
+    icon: 'fas fa-clipboard',
+    link: '/dashboard',
     home: true,
   },
-  {
-    title: 'Mention légale',
-    icon: 'nb-home',
-    link: '/pages/dashboard',
-    home: true,
-  },
-
   {
     title: 'Sources de données',
-    icon: 'nb-keypad',
-    link: '/pages/ui-features',
+    icon: 'fas fa-database',
+    link: '/data',
     children: [
       {
         title: 'Google map',
-        link: '/pages/ui-features/buttons',
+        link: '/data/googlemap',
       },
       {
         title: 'OFS',
-        link: '/pages/ui-features/grid',
+        link: '/data/ofs',
       },
       {
         title: 'Swiss Open Data',
-        link: '/pages/ui-features/grid',
+        link: '/data/swissopendata',
       },
     ],
+  },
+  {
+    title: 'API',
+    icon: 'fas fa-server',
+    link: '/API',
+    home: true,
   },
 ];
 
@@ -43,7 +42,7 @@ const MENU_ITEMS: NbMenuItem[] = [
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'GeoQuality';
+  title = 'GeoQuality - Swiss';
   subTitle = " Check the quality of your futur place with your very own criteria !";
   menu = MENU_ITEMS;
 }

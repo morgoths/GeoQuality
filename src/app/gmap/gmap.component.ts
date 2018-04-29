@@ -310,6 +310,42 @@ export class GmapComponent implements OnInit {
 
   }
 
+  //test
+  test(event, map, self) {
+    
+    console.log(event.target.id)
+    var geoJsonObject;
+    map.data.forEach(function (feature) {
+      map.data.remove(feature);
+    });
+
+    switch (event.target.id) {
+      case "1":
+        $.getJSON("/assets/ch_cantons.json", function (data) {
+          geoJsonObject = topojson.feature(data, data.objects.cantons)
+          map.data.addGeoJson(geoJsonObject)
+          
+        });
+        
+        this.state = States.Canton;
+        break;
+      case "2":
+        $.getJSON("/assets/ch_districts.json", function (data) {
+          geoJsonObject = topojson.feature(data, data.objects.districts)
+          map.data.addGeoJson(geoJsonObject)
+        });
+        this.state = States.Districts;
+        break;
+      case "3":
+        $.getJSON("/assets/ch_communes.json", function (data) {
+          geoJsonObject = topojson.feature(data, data.objects.municipalities)
+          map.data.addGeoJson(geoJsonObject)
+        });
+        this.state = States.Communes;
+        break;
+    }
+  }
+
 
   // Changement d'un radio bouton
   onSelectionChange(entry, map, self) {
