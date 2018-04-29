@@ -311,7 +311,7 @@ export class GmapComponent implements OnInit {
   }
 
   //test
-  test(event, map, self) {
+  test(event, map) {
     
     console.log(event.target.id)
     var geoJsonObject;
