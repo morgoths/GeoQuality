@@ -4,6 +4,10 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import { GmapComponent } from './gmap/gmap.component';
+import { ApiComponent } from './api/api.component';
+import { DatagmapComponent } from './data/gmap/datagmap.component';
+import { OfsComponent } from './data/ofs/ofs.component';
+import { SwissdataComponent } from './data/swissdata/swissdata.component';
 import { HttpModule } from '@angular/http';
 import { NouisliderModule } from 'ng2-nouislider';
 import { NbThemeModule } from '@nebular/theme';
@@ -13,11 +17,10 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 const appRoutes: Routes = [
   { path: 'dashboard', component: GmapComponent },
-  { path: 'data',      component: GmapComponent },
-  { path: 'data/googlemap',      component: GmapComponent },
-  { path: 'data/ofs',      component: GmapComponent },
-  { path: 'data/swissopendata',      component: GmapComponent },
-  { path: 'data/api',      component: GmapComponent },
+  { path: 'data/googlemap',      component: DatagmapComponent },
+  { path: 'data/ofs',      component: OfsComponent },
+  { path: 'data/swissopendata',      component: SwissdataComponent },
+  { path: 'API',      component: ApiComponent },
   { path: '',
     redirectTo: '',
     pathMatch: 'full'
@@ -28,7 +31,11 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    GmapComponent
+    GmapComponent,
+    ApiComponent,
+    DatagmapComponent,
+    OfsComponent,
+    SwissdataComponent
   ],
   imports: [
     BrowserModule,

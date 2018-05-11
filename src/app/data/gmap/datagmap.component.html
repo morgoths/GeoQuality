@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="jumbotron">
+        <h5>Droits d’usage / modification</h5>
+        <h5>Sources</h5>
+        <a href="https://developers.google.com/maps/documentation">Documentation</a>
+        <h5>Mise à jours et évolution des données</h5>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="jumbotron">
+                <h1>Proposition d’adresse</h1>
+                Lors de la saisie d’adresse, l’utilisateur se voit proposé une liste de valeur probable. Nous récupérons cette liste depuis
+                l’API Google maps.
+                <h5>Nettoyage de la donnée</h5>
+                Aucun traitement traitement fait sur les données reçu par l’api Google map. Celle-ci sont déjà adapté à notre utilisation.
+                <h5>Enrichissement de la donnée</h5>
+                Nous n’enrichissemons pas la donnée reçu avec d’autre information.Cependant, nous la mettons en lien avec la saisie utilisateur
+                afin de lui proposer une liste d’adresse probable de manière dynamique.
+                <h5>Visualisation</h5>
+                La donnée est visualisée sous forme de liste. L’utilisateur entre une adresse et une série de proposition de valeur probable
+                lui est alors affiché. Celle-ci est réévaluée à chaque nouvelle input de l’utilisateur.
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            <div class="jumbotron">
+                <h1>Localisation d’adresse</h1>
+                Une fois l’adresse saisie par l’utilisateur, nous récupérons la coordonnée de celle-ci avec un appel sur l’API Google map.
+                <h5>Nettoyage de la donnée</h5>
+                Aucun traitement traitement fait sur les données reçu par l’api Google map. Celle-ci sont déjà adapté à notre utilisation.
+
+                <h5>Enrichissement de la donnée</h5>
+                La donnée reçue est sous forme de coordonnée. Cette donnée est ensuite croisé avec les points d’intérêts proches afin de
+                déterminer leurs emplacement autours de la donnée
+
+                <h5>Visualisation</h5>
+                Pour visualiser, la coordonnée reçue de Google, nous utilisons une carte et un marque rouge afin de la localiser.
+            </div>
+        </div>
+    </div>
+</div>
